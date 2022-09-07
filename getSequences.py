@@ -12,4 +12,5 @@ def getSequences():
         elif line != lines[0]:
             newSequence = newSequence + line
     
+    sequences.append(newSequence.replace('\n', ''))
     return sequences
