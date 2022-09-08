@@ -4,6 +4,11 @@ from getSequences import getSequences
 import random
 from population import generateSeqList, normalizeSize
 
+sequences = []
+
+def generate_individual():
+    return sequences
+
 NUMSEQUENCES = 3
 POPSIZE = 10
 
@@ -16,8 +21,15 @@ random.shuffle(sequences)
 #getting initial population
 sequences = generateSeqList(sequences, NUMSEQUENCES)
 sequences = normalizeSize(sequences)
-population = []
-for i in range(POPSIZE):
-    population.append(sequences)
 
 #starting genetic algorithm
+#maximizing problem
+creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+creator.create("Individual", list, fitness=creator.FitnessMax)
+
+#generating populations
+toolbox = base.Toolbox()
+toolbox.register("sequences", generate_individual)
+toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.sequences)
+toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+pop = toolbox.population(n=POPSIZE)

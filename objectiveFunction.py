@@ -1,6 +1,6 @@
 from pam250 import pam250
 PAM250 = pam250.matrix
 
-def score(alignment, numSequences):
-    # implement it :)
-    return 0
+def evaluate(alignment, numSequences):
+    #deve retornar tupla
+    return (0, 0)
