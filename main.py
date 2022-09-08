@@ -1,4 +1,3 @@
-from ctypes import alignment
 from deap import creator, base, tools, algorithms
 from numpy import matrix
 from getSequences import getSequences
@@ -19,11 +18,6 @@ sequences = generateSeqList(sequences, NUMSEQUENCES)
 sequences = normalizeSize(sequences)
 population = []
 for i in range(POPSIZE):
-    alignment = {
-        "alignment": sequences,
-        "score": 0,
-        "expectedOffspring": 0
-    }
-    population.append(alignment)
+    population.append(sequences)
 
 #starting genetic algorithm
