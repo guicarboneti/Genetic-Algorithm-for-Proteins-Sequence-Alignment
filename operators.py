@@ -5,13 +5,12 @@ from objectiveFunction import evaluate
 def crossover(parentAlg1, parentAlg2):
     alg1 = parentAlg1.copy()
     alg2 = parentAlg2.copy()
-    indexStart = random.randrange(0, len(alg1[0]))
-    indexEnd = random.randrange(indexStart+1, len(alg1[0]))
+    indexStart = random.randrange(0, len(alg1[0])-11)
 
     for i in range(len(alg1)):
-        temp = alg2[i][indexStart:indexEnd]
-        alg2[i] = alg2[i].replace(temp, alg1[i][indexStart:indexEnd])
-        alg1[i] = alg1[i].replace(alg1[i][indexStart:indexEnd], temp)
+        temp = alg2[i][indexStart:indexStart+10]
+        alg2[i] = alg2[i].replace(temp, alg1[i][indexStart:indexStart+10])
+        alg1[i] = alg1[i].replace(alg1[i][indexStart:indexStart+10], temp)
 
     # return the one that scores better
     if evaluate(alg1) > evaluate(alg2):
@@ -19,11 +18,12 @@ def crossover(parentAlg1, parentAlg2):
     else:
         return alg2
 
-# inserts random gaps
+# inserts 1 gap in each sequence
 def gapInsertion(parentAlg):
     alg = []
 
-    for i in range(1, 11):
+    for i in parentAlg:
+
         index1 = random.randrange(0, len(parentAlg[0]))
         index2 = random.randrange(0, len(parentAlg[0]))
 
@@ -52,8 +52,12 @@ def gapShiftLeft(parentAlg):
     sequence = parentAlg[sequence]
     if not '-' in sequence:
         return parentAlg
-    index = [i for i in range(len(sequence)) if sequence.startswith('-', i)]
-    index = index[random.randrange(len(index))]
+
+    try:
+        index = [i for i in range(len(sequence)) if sequence.startswith('-', i)]
+        index = index[random.randrange(len(index))]
+    except:
+        return parentAlg
 
     alg = []
     for i in parentAlg:
@@ -87,15 +91,12 @@ def generateInitialIndividual(parentAlg):
 
     return random.choice(operators)(parentAlg)
 
-def operators(parent1, parent2):
+def newChild(parent1, parent2):
     operators = [gapInsertion, gapShiftLeft, alignmentShift, crossover, gapShiftRight]
 
     chosenOperator = random.choice(operators)
 
     if chosenOperator == crossover:
-        parent1["expectedOffspring"] = parent1["expectedOffspring"] - 1
-        parent2["expectedOffspring"] = parent2["expectedOffspring"] - 1
         return chosenOperator(parent1["alignment"], parent2["alignment"])
     else:
-        parent1["expectedOffspring"] = parent1["expectedOffspring"] - 1
         return chosenOperator(parent1["alignment"])

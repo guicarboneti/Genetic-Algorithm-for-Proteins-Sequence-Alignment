@@ -1,16 +1,18 @@
 from fileinput import close
-import poplib
 from deap import creator, base, tools, algorithms
-from numpy import matrix
+from numpy import matrix, sort
 from getSequences import getSequences
 import random
 from objectiveFunction import evaluate
-from operators import generateInitialIndividual
+from operators import generateInitialIndividual, newChild
 from population import generateSeqList, normalizeSize
 
 NUMSEQUENCES = 3
-NUMGENERATIONS = 40
-POPSIZE = 10
+NUMGENERATIONS = 15
+POPSIZE = 4
+
+def scoreKey(e):
+    return e["score"]
 
 #getting list of sequences
 sequences = getSequences()
@@ -25,8 +27,40 @@ pop = []
 
 for i in range(POPSIZE):
     individual = {
-        "alingment": generateInitialIndividual(sequences),
-        "score": 0,
-        "expectedOffspring": 0
+        "alignment": generateInitialIndividual(sequences),
+        "score": 0
     }
     pop.append(individual)
+
+for i in range(NUMGENERATIONS):
+    print("Geração", i + 1)
+    for individual in pop:
+        if individual["score"] == 0:
+            individual["score"] = evaluate(individual["alignment"])
+
+    pop.sort(key=scoreKey)
+
+    # remove the worst half
+    for individual in range(len(pop) // 2):
+        pop.remove(pop[individual])
+
+    # generate new children
+    parents = pop.copy()
+    for j in range(len(pop) // 2):
+        parent1 = random.choice(parents)
+        parents.remove(parent1)
+        parent2 = random.choice(parents)
+        parents.append(parent1)
+
+        child = {
+            "alignment": newChild(parent1, parent2),
+            "score": 0
+        }
+    
+        pop.append(child)
+
+# end of genetic algorithm
+for individual in pop:
+        if individual["score"] == 0:
+            individual["score"] = evaluate(individual["alignment"])
+print(pop)

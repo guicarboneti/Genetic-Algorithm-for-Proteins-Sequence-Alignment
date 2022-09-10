@@ -4,7 +4,7 @@ PAM250 = pam250.matrix
 def pairScore(seq1, seq2):
     sum = 0
     for i in range(len(seq1)):
-        sum = sum + PAM250[seq1[i]][seq2[i]]
+        sum = sum + int(PAM250[str(seq1[i])][str(seq2[i])])
     return sum
 
 def evaluate(alignment):
