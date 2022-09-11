@@ -15,3 +15,11 @@ def normalizeSize(sequences):
         newSequences.append(i)
     
     return newSequences
+
+def toList(sequences):
+    newSequences = []
+
+    for i in sequences:
+        newSequences.append([*i])
+
+    return newSequences

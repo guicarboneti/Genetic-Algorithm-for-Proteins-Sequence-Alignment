@@ -5,7 +5,7 @@ from getSequences import getSequences
 import random
 from objectiveFunction import evaluate
 from operators import generateInitialIndividual, newChild
-from population import generateSeqList, normalizeSize
+from population import generateSeqList, normalizeSize, toList
 
 NUMSEQUENCES = 3
 NUMGENERATIONS = 15
@@ -13,6 +13,20 @@ POPSIZE = 4
 
 def scoreKey(e):
     return e["score"]
+
+def printPopulation(pop):
+    algNumber = 1
+    for i in pop:
+        print("Alinhamento", algNumber)
+        alignment = []
+        for j in i['alignment']:
+            sequence = ''
+            sequence = sequence.join(j)
+            alignment.append(sequence)
+
+        print(alignment)
+        print("Score:", str(i['score']))
+        algNumber = algNumber + 1
 
 #getting list of sequences
 sequences = getSequences()
@@ -23,6 +37,7 @@ random.shuffle(sequences)
 #getting initial population
 sequences = generateSeqList(sequences, NUMSEQUENCES)
 sequences = normalizeSize(sequences)
+sequences = toList(sequences)
 pop = []
 
 for i in range(POPSIZE):
@@ -63,4 +78,5 @@ for i in range(NUMGENERATIONS):
 for individual in pop:
         if individual["score"] == 0:
             individual["score"] = evaluate(individual["alignment"])
-print(pop)
+
+printPopulation(pop)
