@@ -6,9 +6,10 @@ def crossover(parentAlg1, parentAlg2):
     alg1 = parentAlg1.copy()
     alg2 = parentAlg2.copy()
     indexStart = random.randrange(len(alg1[0]))
+    length = random.randrange(len(alg1[0]) - indexStart)
 
     for i in range(len(alg1)):
-        for j in range(indexStart, indexStart + random.randrange(1, len(alg1[0]) - indexStart)):
+        for j in range(indexStart, indexStart + length):
             temp = alg1[i][j]
             alg1[i][j] = alg2[i][j]
             alg2[i][j] = temp
@@ -62,8 +63,8 @@ def gapShiftRight(parentAlg):
 
     i = random.choice(gapindexes)
 
-    if (len(sequence) <= i + 1):
-        gapShiftLeft(parentAlg)
+    if i + 1 == len(sequence):
+        return gapShiftLeft(parentAlg)
 
     temp = sequence[i + 1]
     sequence[i + 1] = sequence[i]

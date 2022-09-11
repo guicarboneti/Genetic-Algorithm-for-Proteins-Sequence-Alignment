@@ -9,7 +9,7 @@ from population import generateSeqList, normalizeSize, toList
 
 NUMSEQUENCES = 3
 NUMGENERATIONS = 15
-POPSIZE = 4
+POPSIZE = 5
 
 def scoreKey(e):
     return e["score"]
@@ -53,15 +53,14 @@ for i in range(NUMGENERATIONS):
         if individual["score"] == 0:
             individual["score"] = evaluate(individual["alignment"])
 
-    pop.sort(key=scoreKey)
-
     # remove the worst half
-    for individual in range(len(pop) // 2):
+    pop.sort(key=scoreKey)
+    for individual in range(POPSIZE // 2):
         pop.remove(pop[individual])
 
     # generate new children
     parents = pop.copy()
-    for j in range(len(pop) // 2):
+    for j in range(POPSIZE // 2):
         parent1 = random.choice(parents)
         parents.remove(parent1)
         parent2 = random.choice(parents)
