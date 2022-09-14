@@ -35,7 +35,7 @@ sequences = getSequences()
 random.shuffle(sequences)
 
 resultfile = open("result.csv", "w")
-print("generation,highest_fitness,average_fitness,standard_deviation", file=resultfile)
+print("#generation,highest_fitness,average_fitness,standard_deviation", file=resultfile)
 
 #getting initial population
 sequences = generateSeqList(sequences, NUMSEQUENCES)
@@ -57,7 +57,7 @@ for i in range(NUMGENERATIONS):
             individual["score"] = evaluate(individual["alignment"])
 
     popScores = [i['score'] for i in pop]
-    print(i, ",", max(popScores), ",", sum(popScores) / len(popScores), ",", statistics.pstdev(popScores), file=resultfile) 
+    print(i, " ", max(popScores), " ", sum(popScores) / len(popScores), " ", statistics.pstdev(popScores), file=resultfile) 
 
     # remove the worst half
     pop.sort(key=scoreKey)
@@ -84,7 +84,7 @@ for individual in pop:
         if individual["score"] == 0:
             individual["score"] = evaluate(individual["alignment"])
 
-print(NUMGENERATIONS, ",", max(popScores), ",", sum(popScores) / len(popScores), ",", statistics.pstdev(popScores), file=resultfile) 
+print(NUMGENERATIONS, " ", max(popScores), " ", sum(popScores) / len(popScores), " ", statistics.pstdev(popScores), file=resultfile) 
 
 resultfile.close()
 
