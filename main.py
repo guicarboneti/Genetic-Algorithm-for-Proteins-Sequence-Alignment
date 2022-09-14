@@ -6,8 +6,10 @@ from operators import generateInitialIndividual, newChild
 from population import generateSeqList, normalizeSize, toList
 
 NUMSEQUENCES = 3
-NUMGENERATIONS = 15
+NUMGENERATIONS = 50
 POPSIZE = 5
+CXPB = 0.5
+MTPB = 0.2
 
 def scoreKey(e):
     return e["score"]
@@ -73,7 +75,7 @@ for i in range(NUMGENERATIONS):
         parents.append(parent1)
 
         child = {
-            "alignment": newChild(parent1, parent2),
+            "alignment": newChild(parent1, parent2, CXPB, MTPB),
             "score": 0
         }
     
