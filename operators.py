@@ -76,7 +76,10 @@ def gapShiftRight(parentAlg):
 def generateInitialIndividual(parentAlg):
     operators = [gapInsertion, gapShiftLeft]
 
-    return random.choice(operators)(parentAlg)
+    x= random.choice(operators)(parentAlg)
+    print(x)
+    print("\n",evaluate(x), "\n\n----------------------------------\n\n\n")
+    return x
 
 def newChild(parent1, parent2, cxpb, mtpb):
 

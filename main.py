@@ -52,6 +52,12 @@ for i in range(POPSIZE):
     }
     pop.append(individual)
 
+    for ind in pop:
+        print(ind)
+        print(evaluate(ind["alignment"]))
+    print("\n\n\nFINALIIISISIISISIS\n\n\n")
+
+
 for i in range(NUMGENERATIONS):
     print("Geração", i)
     for individual in pop:
@@ -90,4 +96,4 @@ print(NUMGENERATIONS, ",", max(popScores), ",", sum(popScores) / len(popScores),
 
 resultfile.close()
 
-printPopulation(pop)
+# printPopulation(pop)
