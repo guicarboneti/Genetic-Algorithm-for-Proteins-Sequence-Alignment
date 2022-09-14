@@ -78,19 +78,12 @@ def generateInitialIndividual(parentAlg):
 
     return random.choice(operators)(parentAlg)
 
-def newChild(parent1, parent2, cxpb, mtpb):
+def newChild(parent1, parent2):
+    operators = [gapInsertion, gapShiftLeft, crossover, gapShiftRight]
 
-    child = {
-        "alignment": parent1["alignment"],
-        "score": 0
-    }
-    if random.random() < cxpb:
-        child["alignment"] = crossover(parent1["alignment"], parent2["alignment"])
+    chosenOperator = random.choice(operators)
 
-    if random.random() < mtpb:
-        operators = [gapInsertion, gapShiftLeft, gapShiftRight]
-        chosenOperator = random.choice(operators)
-        mutant = chosenOperator(child["alignment"])
-        return mutant
-
-    return child["alignment"]
+    if chosenOperator == crossover:
+        return chosenOperator(parent1["alignment"], parent2["alignment"])
+    else:
+        return chosenOperator(parent1["alignment"])
