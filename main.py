@@ -1,5 +1,6 @@
 import statistics
 from getSequences import getSequences
+from utils import *
 import random
 from objectiveFunction import evaluate
 from operators import generateInitialIndividual, newChild
@@ -43,20 +44,19 @@ print("generation,highest_fitness,average_fitness,standard_deviation", file=resu
 sequences = generateSeqList(sequences, NUMSEQUENCES)
 sequences = normalizeSize(sequences)
 sequences = toList(sequences)
+
 pop = []
 
 for i in range(POPSIZE):
     individual = {
-        "alignment": generateInitialIndividual(sequences),
+        "alignment": ListOfCharsToString(generateInitialIndividual(sequences)),
         "score": 0
     }
     pop.append(individual)
 
-    for ind in pop:
-        print(ind)
-        print(evaluate(ind["alignment"]))
-    print("\n\n\nFINALIIISISIISISIS\n\n\n")
-
+# retransform into list of chars
+for ind in pop:
+    ind["alignment"] = (toList(strToListOfChars(ind["alignment"])))
 
 for i in range(NUMGENERATIONS):
     print("Geração", i)
