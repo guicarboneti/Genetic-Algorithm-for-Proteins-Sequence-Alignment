@@ -7,8 +7,8 @@ from operators import generateInitialIndividual, newChild
 from population import generateSeqList, normalizeSize, toList
 
 NUMSEQUENCES = 3
-NUMGENERATIONS = 50
-POPSIZE = 5
+NUMGENERATIONS = 200
+POPSIZE = 15
 CXPB = 0.5
 MTPB = 0.2
 
@@ -58,21 +58,19 @@ for i in range(POPSIZE):
 for ind in pop:
     ind["alignment"] = (toList(strToListOfChars(ind["alignment"])))
 
+# compute fitness of population 0
+for individual in pop:
+    individual["score"] = evaluate(individual["alignment"])
+
 for i in range(NUMGENERATIONS):
     print("Geração", i)
-    for individual in pop:
-        if individual["score"] == 0:
-            individual["score"] = evaluate(individual["alignment"])
 
-    popScores = [i['score'] for i in pop]
-    print(i, ",", max(popScores), ",", sum(popScores) / len(popScores), ",", statistics.pstdev(popScores), file=resultfile) 
-
-    # remove the worst half
+    # SELECTION (remove the worst half)
     pop.sort(key=scoreKey)
     for individual in range(POPSIZE // 2):
         pop.remove(pop[individual])
 
-    # generate new children
+    # CROSSOVER
     parents = pop.copy()
     for j in range(POPSIZE // 2):
         parent1 = random.choice(parents)
@@ -86,6 +84,13 @@ for i in range(NUMGENERATIONS):
         }
     
         pop.append(child)
+
+    # compute fitness of population
+    for individual in pop:
+            individual["score"] = evaluate(individual["alignment"])
+
+    popScores = [i['score'] for i in pop]
+    print(i, ",", max(popScores), ",", sum(popScores) / len(popScores), ",", statistics.pstdev(popScores), file=resultfile) 
 
 # end of genetic algorithm
 for individual in pop:
