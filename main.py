@@ -1,5 +1,6 @@
 import statistics
 from getSequences import getSequences
+from utils import *
 import random
 from objectiveFunction import evaluate
 from operators import generateInitialIndividual, newChild
@@ -43,36 +44,33 @@ print("generation,highest_fitness,average_fitness,standard_deviation", file=resu
 sequences = generateSeqList(sequences, NUMSEQUENCES)
 sequences = normalizeSize(sequences)
 sequences = toList(sequences)
+
 pop = []
 
 for i in range(POPSIZE):
     individual = {
-        "alignment": generateInitialIndividual(sequences),
+        "alignment": ListOfCharsToString(generateInitialIndividual(sequences)),
         "score": 0
     }
     pop.append(individual)
 
-    for ind in pop:
-        print(ind)
-        print(evaluate(ind["alignment"]))
-    print("\n\n\nFINALIIISISIISISIS\n\n\n")
+# retransform into list of chars
+for ind in pop:
+    ind["alignment"] = (toList(strToListOfChars(ind["alignment"])))
 
+# compute fitness of population 0
+for individual in pop:
+    individual["score"] = evaluate(individual["alignment"])
 
 for i in range(NUMGENERATIONS):
     print("Geração", i)
-    for individual in pop:
-        if individual["score"] == 0:
-            individual["score"] = evaluate(individual["alignment"])
 
-    popScores = [i['score'] for i in pop]
-    print(i, ",", max(popScores), ",", sum(popScores) / len(popScores), ",", statistics.pstdev(popScores), file=resultfile) 
-
-    # remove the worst half
+    # SELECTION (remove the worst half)
     pop.sort(key=scoreKey)
     for individual in range(POPSIZE // 2):
         pop.remove(pop[individual])
 
-    # generate new children
+    # CROSSOVER
     parents = pop.copy()
     for j in range(POPSIZE // 2):
         parent1 = random.choice(parents)
@@ -86,6 +84,13 @@ for i in range(NUMGENERATIONS):
         }
     
         pop.append(child)
+
+    # compute fitness of population
+    for individual in pop:
+            individual["score"] = evaluate(individual["alignment"])
+
+    popScores = [i['score'] for i in pop]
+    print(i, ",", max(popScores), ",", sum(popScores) / len(popScores), ",", statistics.pstdev(popScores), file=resultfile) 
 
 # end of genetic algorithm
 for individual in pop:
