@@ -1,5 +1,6 @@
 import statistics
 from getSequences import getSequences
+from utils import *
 import random
 from objectiveFunction import evaluate
 from operators import generateInitialIndividual, newChild
@@ -8,6 +9,8 @@ from population import generateSeqList, normalizeSize, toList
 NUMSEQUENCES = 3
 NUMGENERATIONS = 15
 POPSIZE = 5
+CXPB = 0.5
+MTPB = 0.2
 
 def scoreKey(e):
     return e["score"]
@@ -35,36 +38,39 @@ sequences = getSequences()
 random.shuffle(sequences)
 
 resultfile = open("result.csv", "w")
-print("#generation,highest_fitness,average_fitness,standard_deviation", file=resultfile)
+print("generation,highest_fitness,average_fitness,standard_deviation", file=resultfile)
 
 #getting initial population
 sequences = generateSeqList(sequences, NUMSEQUENCES)
 sequences = normalizeSize(sequences)
 sequences = toList(sequences)
+
 pop = []
 
 for i in range(POPSIZE):
     individual = {
-        "alignment": generateInitialIndividual(sequences),
+        "alignment": ListOfCharsToString(generateInitialIndividual(sequences)),
         "score": 0
     }
     pop.append(individual)
 
+# retransform into list of chars
+for ind in pop:
+    ind["alignment"] = (toList(strToListOfChars(ind["alignment"])))
+
+# compute fitness of population 0
+for individual in pop:
+    individual["score"] = evaluate(individual["alignment"])
+
 for i in range(NUMGENERATIONS):
     print("Geração", i)
-    for individual in pop:
-        if individual["score"] == 0:
-            individual["score"] = evaluate(individual["alignment"])
 
-    popScores = [i['score'] for i in pop]
-    print(i, " ", max(popScores), " ", sum(popScores) / len(popScores), " ", statistics.pstdev(popScores), file=resultfile) 
-
-    # remove the worst half
+    # SELECTION (remove the worst half)
     pop.sort(key=scoreKey)
     for individual in range(POPSIZE // 2):
         pop.remove(pop[individual])
 
-    # generate new children
+    # CROSSOVER
     parents = pop.copy()
     for j in range(POPSIZE // 2):
         parent1 = random.choice(parents)
@@ -73,19 +79,26 @@ for i in range(NUMGENERATIONS):
         parents.append(parent1)
 
         child = {
-            "alignment": newChild(parent1, parent2),
+            "alignment": newChild(parent1, parent2, CXPB, MTPB),
             "score": 0
         }
     
         pop.append(child)
+
+    # compute fitness of population
+    for individual in pop:
+            individual["score"] = evaluate(individual["alignment"])
+
+    popScores = [i['score'] for i in pop]
+    print(i, ",", max(popScores), ",", sum(popScores) / len(popScores), ",", statistics.pstdev(popScores), file=resultfile) 
 
 # end of genetic algorithm
 for individual in pop:
         if individual["score"] == 0:
             individual["score"] = evaluate(individual["alignment"])
 
-print(NUMGENERATIONS, " ", max(popScores), " ", sum(popScores) / len(popScores), " ", statistics.pstdev(popScores), file=resultfile) 
+print(NUMGENERATIONS, ",", max(popScores), ",", sum(popScores) / len(popScores), ",", statistics.pstdev(popScores), file=resultfile) 
 
 resultfile.close()
 
-printPopulation(pop)
+# printPopulation(pop)
