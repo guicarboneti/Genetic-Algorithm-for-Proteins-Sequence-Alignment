@@ -6,7 +6,7 @@ from operators import generateInitialIndividual, newChild
 from population import generateSeqList, normalizeSize, toList
 
 NUMSEQUENCES = 3
-NUMGENERATIONS = 50
+NUMGENERATIONS = 15
 POPSIZE = 5
 CXPB = 0.5
 MTPB = 0.2
